@@ -25,7 +25,7 @@ public class CatalogServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             final Catalog catalog = Catalog.getInstance();
-            writer.println(new ProductPage(catalog).getPageText());
+            writer.println(new ProductPage(catalog, req).getPageText());
             return;
         }
 
@@ -37,7 +37,7 @@ public class CatalogServlet extends HttpServlet {
                 sendNotFound(resp, stringId);
                 return;
             }
-            writer.println(new ProductPage(product).getPageText());
+            writer.println(new ProductPage(product, req).getPageText());
         } catch (NumberFormatException e) {
             log.error(e.getMessage());
             sendNotFound(resp, stringId);

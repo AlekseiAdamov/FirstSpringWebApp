@@ -3,12 +3,14 @@ package ru.geekbrains.webapp.common;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
 @Getter
 public class ProductPage {
+    private final HttpServletRequest request;
     private String pageText = "";
 
     {
@@ -23,7 +25,8 @@ public class ProductPage {
         }
     }
     
-    public ProductPage(Catalog catalog) {
+    public ProductPage(Catalog catalog, HttpServletRequest request) {
+        this.request = request;
         final StringBuilder sb = new StringBuilder();
         sb.append("<table class=\"table\">\n");
         sb.append(getHeaderRow());
@@ -39,7 +42,8 @@ public class ProductPage {
         }
     }
 
-    public ProductPage(Product product) {
+    public ProductPage(Product product, HttpServletRequest request) {
+        this.request = request;
         final String tableContent = "<table class=\"table\">\n" +
                 getHeaderRow() +
                 "\t<tbody>" +
@@ -68,7 +72,11 @@ public class ProductPage {
     private String getProductRow(Product product) {
         return "\t\t<tr>\n" +
                 String.format("\t\t\t<td class=\"table center\">%d</td>\n", product.getId()) +
-                String.format("\t\t\t<td class=\"table\">%s</td>\n", product.getName()) +
+                String.format("\t\t\t<td class=\"table\"><a href=\"%s%s/%d\">%s</a></td>\n",
+                        request.getContextPath(),
+                        request.getServletPath(),
+                        product.getId(),
+                        product.getName()) +
                 String.format("\t\t\t<td class=\"table right\">%.2f</td>\n", product.getPrice()) +
                 "\t\t</tr>\n";
     }
