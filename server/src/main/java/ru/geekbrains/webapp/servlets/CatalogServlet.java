@@ -2,6 +2,9 @@ package ru.geekbrains.webapp.servlets;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import ru.geekbrains.webapp.common.Catalog;
+import ru.geekbrains.webapp.common.Product;
+import ru.geekbrains.webapp.common.ProductPage;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

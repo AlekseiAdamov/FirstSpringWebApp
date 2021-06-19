@@ -1,4 +1,4 @@
-package ru.geekbrains.webapp.servlets;
+package ru.geekbrains.webapp.common;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
