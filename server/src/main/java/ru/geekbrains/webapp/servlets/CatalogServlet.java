@@ -2,7 +2,7 @@ package ru.geekbrains.webapp.servlets;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
-import ru.geekbrains.webapp.common.Catalog;
+import ru.geekbrains.webapp.common.ProductCatalog;
 import ru.geekbrains.webapp.common.Product;
 import ru.geekbrains.webapp.common.ProductPage;
 
@@ -24,7 +24,7 @@ public class CatalogServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
-            final Catalog catalog = Catalog.getInstance();
+            final ProductCatalog catalog = ProductCatalog.getInstance();
             writer.println(new ProductPage(catalog, req).getPageText());
             return;
         }
@@ -32,7 +32,7 @@ public class CatalogServlet extends HttpServlet {
         final String stringId = pathInfo.replace("/", "");
         try {
             long id = Long.parseLong(stringId);
-            final Product product = Catalog.getInstance().getProduct(id);
+            final Product product = ProductCatalog.getInstance().getProduct(id);
             if (product == null) {
                 sendNotFound(resp, stringId);
                 return;

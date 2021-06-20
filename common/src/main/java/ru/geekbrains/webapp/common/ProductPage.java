@@ -24,8 +24,8 @@ public class ProductPage {
             log.error(e.getMessage());
         }
     }
-    
-    public ProductPage(Catalog catalog, HttpServletRequest request) {
+
+    public ProductPage(ProductCatalog catalog, HttpServletRequest request) {
         this.request = request;
         final StringBuilder sb = new StringBuilder();
         sb.append("<table class=\"table\">\n");
