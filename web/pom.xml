@@ -35,8 +35,9 @@
                     <version>2.2</version>
                     <configuration>
                         <url>http://188.93.211.229:8080/manager/text</url>
+<!--                        <url>http://localhost:8080/manager/text</url>-->
                         <username>deployer</username>
-                        <password>deployer</password>
+                        <password>jqgE4YV7A*iT@H^b</password>
                         <path>/shop</path>
                     </configuration>
                 </plugin>
