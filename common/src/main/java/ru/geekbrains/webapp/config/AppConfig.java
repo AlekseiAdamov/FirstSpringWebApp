@@ -1,29 +1,62 @@
 package ru.geekbrains.webapp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import ru.geekbrains.webapp.common.Cart;
-import ru.geekbrains.webapp.common.Product;
-import ru.geekbrains.webapp.common.ProductCatalog;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.thymeleaf.spring5.ISpringTemplateEngine;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
+@EnableWebMvc
+@ComponentScan("ru.geekbrains")
 @Configuration
-public class AppConfig {
+public class AppConfig implements WebMvcConfigurer {
 
-    @Bean(name = "product")
-    @Scope("prototype")
-    public Product product() {
-        return new Product();
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
-    @Bean(name = "productCatalog")
-    public ProductCatalog productCatalog() {
-        return ProductCatalog.getInstance();
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
-    @Bean(name = "cart")
-    @Scope("prototype")
-    public Cart cart() {
-        return new Cart();
+    @Bean
+    public ViewResolver htmlViewResolver() {
+        final ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+        resolver.setTemplateEngine(templateEngine(htmlTemplateResolver()));
+        resolver.setContentType("text/html");
+        resolver.setCharacterEncoding("UTF-8");
+        resolver.setViewNames(new String[] {"*"});
+        return resolver;
+    }
+
+    private ITemplateResolver htmlTemplateResolver() {
+        final SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
+        resolver.setApplicationContext(applicationContext);
+        resolver.setPrefix("/WEB-INF/views/");
+        resolver.setSuffix(".html");
+        resolver.setCacheable(false);
+        resolver.setCharacterEncoding("UTF-8");
+        resolver.setTemplateMode(TemplateMode.HTML);
+        return resolver;
+    }
+
+    private ISpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
+        final SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.setTemplateResolver(templateResolver);
+        return engine;
     }
 }
