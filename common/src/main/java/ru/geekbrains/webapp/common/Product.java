@@ -6,19 +6,15 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Component("product")
 public class Product {
     private long id;
-
-    @Setter
     private String name;
-
-    @Setter
     private double price;
 
-    public Product(long id, String name, double price) {
-        this.id = id;
+    public Product(String name, double price) {
         this.name = name;
         this.price = price;
     }
