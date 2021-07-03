@@ -44,8 +44,8 @@ public class ProductRepository {
         productRepository.put(product.getId(), product);
     }
 
-    public void remove(Product product) {
-        productRepository.remove(product.getId());
+    public void remove(long id) {
+        productRepository.remove(id);
     }
 
     public int getSize() {

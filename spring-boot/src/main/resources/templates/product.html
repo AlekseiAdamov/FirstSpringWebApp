@@ -60,8 +60,10 @@
                     <td><a th:text="${product.name}" th:href="@{/product/__${product.id}__}">Name</a></td>
                     <td class="right" th:text="${product.price}">Price</td>
                     <td>
-                        <a class="btn btn-success" th:href="@{/product/__${product.id}__}"><i class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger" href="#"><i class="far fa-trash-alt"></i></a>
+                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i class="fas fa-edit"></i></a>
+                        <form class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">
+                            <button type="submit" class="btn btn-danger" href="#"><i class="far fa-trash-alt"></i></button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

@@ -50,6 +50,13 @@ public class ProductController {
         return "product_form";
     }
 
+    @DeleteMapping("/{id}")
+    public String deleteProduct(@PathVariable("id") Long id) {
+        log.info("Deleting user with id {}", id);
+        productRepository.remove(id);
+        return "redirect:/product";
+    }
+
     @GetMapping("/error")
     public String error(Model model) {
         log.info("Non existing page requested");
