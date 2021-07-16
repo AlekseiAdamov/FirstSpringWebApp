@@ -2,6 +2,10 @@ package ru.geekbrains.shop.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.geekbrains.shop.dao.ProductRepository;
 import ru.geekbrains.shop.entity.Product;
+import ru.geekbrains.shop.entity.ProductSpecification;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,23 +33,41 @@ public class ProductController {
 
     @GetMapping
     public String listPage(Model model,
-                           @RequestParam(required = false) Double minPrice,
-                           @RequestParam(required = false) Double maxPrice) {
-        String logMessage = "Product list page requested";
-        List<Product> products = null;
+                           @RequestParam(required = false) Optional<String> productName,
+                           @RequestParam(required = false) Optional<Double> minPrice,
+                           @RequestParam(required = false) Optional<Double> maxPrice,
+                           @RequestParam(required = false) Optional<Integer> page,
+                           @RequestParam(required = false) Optional<Integer> size,
+                           @RequestParam(required = false) Optional<String> sortBy,
+                           @RequestParam(required = false) Optional<String> sortOrder) {
+        final String logMessage = String.format("Product list page requested with parameters: " +
+                        "productName = %s, " +
+                        "minPrice = %s, " +
+                        "maxPrice = %s",
+                productName.orElse(null),
+                minPrice.orElse(null),
+                maxPrice.orElse(null));
 
-        if (minPrice != null && maxPrice != null) {
-            products = productRepository.findAllByPriceBetween(minPrice, maxPrice);
-            logMessage = logMessage + String.format(" with price between %s and %s", minPrice, maxPrice);
-        } else if (minPrice != null) {
-            products = productRepository.findAllByPriceGreaterThan(minPrice);
-            logMessage = logMessage + String.format(" with price greater than %s", minPrice);
-        } else if (maxPrice != null) {
-            products = productRepository.findAllByPriceLessThan(maxPrice);
-            logMessage = logMessage + String.format(" with price less than %s", maxPrice);
-        } else {
-            products = productRepository.findAll();
+        Specification<Product> specification = Specification.where(null);
+        if (productName.isPresent()) {
+            specification = specification.and(ProductSpecification.productName(productName.get()));
         }
+        if (minPrice.isPresent()) {
+            specification = specification.and(ProductSpecification.minPrice(minPrice.get()));
+        }
+        if (maxPrice.isPresent()) {
+            specification = specification.and(ProductSpecification.maxPrice(maxPrice.get()));
+        }
+
+        final Sort sortDirection = sortOrder.orElse("asc").equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortBy.orElse("id")).ascending() : Sort.by(sortBy.orElse("id")).descending();
+
+        final PageRequest pageRequest = PageRequest.of(
+                page.orElse(1) - 1,
+                size.orElse(3),
+                sortDirection
+        );
+        final Page<Product> products = productRepository.findAll(specification, pageRequest);
 
         log.info(logMessage);
         model.addAttribute("products", products);
