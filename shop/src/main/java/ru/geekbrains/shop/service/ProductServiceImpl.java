@@ -11,6 +11,7 @@ import ru.geekbrains.shop.dao.ProductRepository;
 import ru.geekbrains.shop.entity.Product;
 import ru.geekbrains.shop.entity.ProductSpecification;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +22,11 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     public ProductServiceImpl(ProductRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return repository.findAll();
     }
 
     @Override

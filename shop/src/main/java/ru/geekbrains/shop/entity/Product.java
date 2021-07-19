@@ -36,10 +36,14 @@ public class Product {
     }
 
     public Product(ProductDTO product) {
-        this.id = product.getId();
+        if (product.getId() != null) {
+            this.id = product.getId();
+        }
         this.name = product.getName();
         this.price = product.getPrice();
-        this.customers = new ArrayList<>(product.getCustomers());
+        if (product.getCustomers() != null) {
+            this.customers = new ArrayList<>(product.getCustomers());
+        }
     }
 
     @Override

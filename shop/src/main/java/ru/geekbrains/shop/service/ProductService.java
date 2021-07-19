@@ -4,9 +4,12 @@ import org.springframework.data.domain.Page;
 import ru.geekbrains.shop.dto.ProductListParamsDTO;
 import ru.geekbrains.shop.entity.Product;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
+
+    List<Product> findAll();
 
     Page<Product> findWithFilter(ProductListParamsDTO params);
 
