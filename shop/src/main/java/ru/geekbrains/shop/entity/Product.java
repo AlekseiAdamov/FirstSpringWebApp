@@ -1,4 +1,4 @@
-package ru.geekbrains.springhibernate.persist;
+package ru.geekbrains.shop.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +24,7 @@ public class Product {
     @Column(precision = 2)
     private double price;
 
-    @ManyToMany(mappedBy = "products")
-//    @JoinTable(
-//            name = "customers_products",
-//            joinColumns = @JoinColumn(name = "product_id"),
-//            inverseJoinColumns = @JoinColumn(name = "customer_id")
-//    )
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
     private List<Customer> customers;
 
     public Product(Long id, String name, double price) {

@@ -1,4 +1,4 @@
-package ru.geekbrains.springhibernate.persist;
+package ru.geekbrains.shop.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
