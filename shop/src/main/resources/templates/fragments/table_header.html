@@ -8,11 +8,9 @@
                            minPrice=${param.minPrice},
                            maxPrice=${param.maxPrice},
                            sortBy=${column},
-                           sortOrder=${param.sortOrder == 'asc' || param.sortOrder == null} ? 'desc' : 'asc'
+                           sortOrder=${reverseSortOrder}
                            )}">
-        <i th:class="${param.sortBy == 'id' && (param.sortOrder == 'asc' || param.sortOrder == null)}
-                               ? 'fa fa-sort-up'
-                               : 'fa fa-sort-down'"></i>
+        <i class="fa fa-sort-down"></i>
     </a>
 </th>
 

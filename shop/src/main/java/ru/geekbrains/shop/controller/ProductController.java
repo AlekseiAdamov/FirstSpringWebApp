@@ -42,10 +42,11 @@ public class ProductController {
                 params.getProductName(),
                 params.getMinPrice(),
                 params.getMaxPrice());
+        log.info(logMessage);
 
         final Page<Product> products = service.findWithFilter(params);
 
-        log.info(logMessage);
+        model.addAttribute("reverseSortOrder", "asc".equals(params.getSortOrder()) ? "desc" : "asc");
         model.addAttribute("products", products);
         return PRODUCT_LIST_PAGE;
     }
