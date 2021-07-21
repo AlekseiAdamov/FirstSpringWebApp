@@ -3,8 +3,10 @@ package ru.geekbrains.shop.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.geekbrains.shop.dto.ProductDTO;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,7 +24,7 @@ public class Product {
     private String name;
 
     @Column(precision = 2)
-    private double price;
+    private Double price;
 
     @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
     private List<Customer> customers;
@@ -31,6 +33,17 @@ public class Product {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    public Product(ProductDTO product) {
+        if (product.getId() != null) {
+            this.id = product.getId();
+        }
+        this.name = product.getName();
+        this.price = product.getPrice();
+        if (product.getCustomers() != null) {
+            this.customers = new ArrayList<>(product.getCustomers());
+        }
     }
 
     @Override
