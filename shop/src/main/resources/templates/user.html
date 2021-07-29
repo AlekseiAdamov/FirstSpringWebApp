@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<style>
+    .center {
+        text-align: center
+    }
+
+    .right {
+        text-align: right
+    }
+</style>
+
+<head th:replace="fragments/page_head :: page_head"></head>
+
+<body>
+
+<nav th:replace="fragments/page_nav :: page_nav"></nav>
+
+<div class="container">
+    <div class="row py-2">
+        <div class="col-12">
+            <a class="btn btn-primary" th:href="@{/user/new}">Add user</a>
+        </div>
+
+        <div class="col-12 mt-3">
+            <form class="form-inline" th:method="get">
+                <div class="form-group mb-2 mr-2">
+                    <label for="userName" class="sr-only">User name</label>
+                    <input type="text" value="" class="form-control" id="userName" th:value="${param.userName}"
+                           name="userName" placeholder="User name">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2 mr-2">Apply</button>
+            </form>
+        </div>
+
+        <div class="col-12">
+            <table class="table table-bordered table-striped table-hover my-2">
+                <thead>
+                <tr>
+                    <th th:replace="fragments/user_table_header :: table_header('Id', 'id')"></th>
+                    <th th:replace="fragments/user_table_header :: table_header('Name', 'userName')"></th>
+                    <th th:replace="fragments/user_table_header :: table_header('Password', 'password')"></th>
+                    <th class="center" scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${users.hasContent()}" th:each="user : ${users.content}">
+                    <th scope="row" class="center" th:text="${user.id}">ID</th>
+                    <td><a th:text="${user.username}" th:href="@{/user/__${user.id}__}">Name</a></td>
+                    <td class="right" th:text="${user.password}">Password</td>
+                    <td>
+                        <a class="btn btn-success" th:href="@{/user/{id}(id = ${user.id})}"><i
+                                class="fas fa-edit"></i></a>
+                        <form class="d-inline" th:method="delete" th:action="@{/user/{id}(id = ${user.id})}">
+                            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:unless="${users.hasContent()}">
+                    <td colspan="4">No users found with the specified criteria</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${users.hasContent() && users.getTotalPages() > 1}" class="col-12 mt-3">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li th:if="${users.hasPrevious()}" class="page-item">
+                        <a th:replace="fragments/page_link :: page_link(${users.number}, 'Previous')">Previous</a>
+                    </li>
+                    <li th:each="num : ${#numbers.sequence(1, users.totalPages)}"
+                        th:classappend="${num == users.number + 1} ? 'active'"
+                        class="page-item">
+                        <a th:replace="fragments/page_link :: page_link(${num}, ${num})">1</a>
+                    </li>
+                    <li th:if="${users.hasNext()}" class="page-item">
+                        <a th:replace="fragments/page_link :: page_link(${users.number + 2}, 'Next')">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/page_footer :: page_footer"></div>
+
+</body>
+</html>

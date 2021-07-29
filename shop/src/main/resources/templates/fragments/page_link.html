@@ -1,7 +1,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <a th:fragment="page_link(pageNumber, linkText)" class="page-link"
-   th:text=${linkText}
+   th:text="${linkText}"
    th:href="@{/product(
                        page=${pageNumber},
                        size=${products.size},

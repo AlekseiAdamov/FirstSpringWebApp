@@ -55,7 +55,7 @@ public class ProductController {
     public String newProductForm(Model model) {
         log.info("New product page requested");
 
-        model.addAttribute(PRODUCT_ATTRIBUTE, new Product());
+        model.addAttribute(PRODUCT_ATTRIBUTE, new ProductDTO());
         return PRODUCT_FORM_PAGE;
     }
 
@@ -74,7 +74,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public String deleteProduct(@PathVariable("id") Long id) {
-        log.info("Deleting user with id {}", id);
+        log.info("Deleting product with id {}", id);
         service.deleteById(id);
         return "redirect:/product";
     }
@@ -88,7 +88,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public String update(@Valid ProductDTO product, BindingResult result) {
+    public String update(@Valid @ModelAttribute("product") ProductDTO product, BindingResult result) {
         if (result.hasErrors()) {
             return PRODUCT_FORM_PAGE;
         }
