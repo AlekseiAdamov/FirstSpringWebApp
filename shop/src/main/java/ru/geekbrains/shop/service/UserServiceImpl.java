@@ -15,6 +15,7 @@ import ru.geekbrains.shop.entity.Role;
 import ru.geekbrains.shop.entity.User;
 import ru.geekbrains.shop.entity.UserSpecification;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -102,12 +103,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(UserDTO user) {
+        Set<RoleDTO> roles = user.getRoles();
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
         User persistentUser = new User(
                 user.getId(),
                 user.getUsername(),
                 passwordEncoder.encode(user.getPassword()),
-                user.getRoles()
-                        .stream()
+                roles.stream()
                         .map(role -> new Role(
                                 role.getId(),
                                 role.getName()))
