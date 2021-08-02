@@ -1,13 +1,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<!--/*@thymesVar id="users" type="org.springframework.data.domain.Page<ru.geekbrains.shop.entity.UserDTO>"*/-->
 <a th:fragment="page_link(pageNumber, linkText)" class="page-link"
    th:text="${linkText}"
-   th:href="@{/product(
+   th:href="@{/user(
                        page=${pageNumber},
-                       size=${products.size},
-                       productName=${param.productName},
-                       minPrice=${param.minPrice},
-                       maxPrice=${param.maxPrice},
+                       size=${users.size},
+                       username=${param.username},
                        sortBy=${param.sortBy == null
                                 ? 'id'
                                 : param.sortBy},

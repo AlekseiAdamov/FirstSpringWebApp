@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/page_head :: page_head"></head>
+
+<body>
+
+<nav th:replace="fragments/page_nav :: page_nav"></nav>
+
+<div class="container">
+    <div class="row py-2 justify-content-center">
+        <div class="col-4">
+            <form th:action="@{/register}" method="post" th:object="${user}">
+                <input type="hidden" id="id" th:field="*{id}">
+                <div class="form-group">
+                    <label>User name</label>
+                    <input type="text" class="form-control mb-2" id="username" th:field="*{username}" autofocus="autofocus"
+                           placeholder="Enter user name">
+                    <p class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+
+                    <label>User password</label>
+                    <input type="password" class="form-control mb-2" id="password" th:field="*{password}"
+                           placeholder="Enter user password">
+                    <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                    <input type="password" class="form-control mb-2" id="repeatedPassword" th:field="*{repeatedPassword}"
+                           placeholder="Repeat password">
+                    <p class="text-danger" th:if="${#fields.hasErrors('repeatedPassword')}" th:errors="*{repeatedPassword}"></p>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/page_footer :: page_footer"></div>
+
+</body>
+</html>

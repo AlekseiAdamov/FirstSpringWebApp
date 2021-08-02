@@ -14,13 +14,20 @@ public class SecurityConfig {
                            UserAuthService authService) throws Exception {
 
         auth.inMemoryAuthentication()
+                .passwordEncoder(passwordEncoder)
                 .withUser("mem_user")
-                .password(passwordEncoder.encode("password"))
+                .password(passwordEncoder.encode("user"))
                 .roles("ADMIN")
+
                 .and()
                 .withUser("mem_guest")
-                .password(passwordEncoder.encode("password"))
-                .roles("GUEST");
+                .password(passwordEncoder.encode("guest"))
+                .roles("GUEST")
+
+                .and()
+                .withUser("mem_admin")
+                .password(passwordEncoder.encode("admin"))
+                .roles("SUPER_ADMIN");
 
         auth.userDetailsService(authService);
     }

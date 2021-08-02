@@ -8,13 +8,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.shop.dao.UserRepository;
+import ru.geekbrains.shop.dto.RoleDTO;
 import ru.geekbrains.shop.dto.UserDTO;
 import ru.geekbrains.shop.dto.UserListParamsDTO;
+import ru.geekbrains.shop.entity.Role;
 import ru.geekbrains.shop.entity.User;
 import ru.geekbrains.shop.entity.UserSpecification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,20 +36,26 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> findAll() {
         return repository.findAll()
                 .stream()
-                .map(user -> new UserDTO(user.getId(), user.getUsername()))
+                .map(user -> new UserDTO(
+                        user.getId(),
+                        user.getUsername(),
+                        mapRolesToRolesDTO(user)))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<UserDTO> findById(Long id) {
-        return repository.findById(id).map(user -> new UserDTO(user.getId(), user.getUsername()));
+        return repository.findById(id).map(user -> new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                mapRolesToRolesDTO(user)));
     }
 
     @Override
     public Page<UserDTO> findWithFilter(UserListParamsDTO params) {
         Specification<User> specification = Specification.where(null);
-        if (params.getUserName() != null && !params.getUserName().isBlank()) {
-            specification = specification.and(UserSpecification.userName(params.getUserName()));
+        if (params.getUsername() != null && !params.getUsername().isBlank()) {
+            specification = specification.and(UserSpecification.username(params.getUsername()));
         }
 
         final Sort sortDirection = Optional.ofNullable(params.getSortOrder())
@@ -61,13 +70,29 @@ public class UserServiceImpl implements UserService {
                 sortDirection
         );
 
-        return repository.findAll(specification, pageRequest).map(user -> new UserDTO(user.getId(), user.getUsername()));
+        return repository.findAll(specification, pageRequest)
+                .map(user -> new UserDTO(
+                        user.getId(),
+                        user.getUsername(),
+                        mapRolesToRolesDTO(user)));
     }
 
     @Override
     public UserDTO getById(Long id) {
         User user = repository.getById(id);
-        return new UserDTO(user.getId(), user.getUsername());
+        return new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                mapRolesToRolesDTO(user));
+    }
+
+    private Set<RoleDTO> mapRolesToRolesDTO(User user) {
+        return user.getRoles()
+                .stream()
+                .map(role -> new RoleDTO(
+                        role.getId(),
+                        role.getName()))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -77,7 +102,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(UserDTO user) {
-        User persistentUser = new User(user.getId(), user.getUsername(), passwordEncoder.encode(user.getPassword()));
+        User persistentUser = new User(
+                user.getId(),
+                user.getUsername(),
+                passwordEncoder.encode(user.getPassword()),
+                user.getRoles()
+                        .stream()
+                        .map(role -> new Role(
+                                role.getId(),
+                                role.getName()))
+                        .collect(Collectors.toSet()));
         repository.save(persistentUser);
+    }
+
+    @Override
+    public Optional<UserDTO> findByName(String username) {
+        return repository.findByUsername(username)
+                .map(user -> new UserDTO(
+                        user.getId(),
+                        user.getUsername(),
+                        mapRolesToRolesDTO(user)));
     }
 }

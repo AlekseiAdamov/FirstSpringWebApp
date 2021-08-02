@@ -1,6 +1,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <th class="center" scope="col" th:fragment="table_header(title, column)">[[${title}]]
+    <!--/*@thymesVar id="products" type="org.springframework.data.domain.Page<ru.geekbrains.shop.entity.Product>"*/-->
+    <!--/*@thymesVar id="reverseSortOrder" type="java.lang.String"*/-->
     <a th:href="@{/product(
                         page=${products.number + 1},
                            size=${products.size},
