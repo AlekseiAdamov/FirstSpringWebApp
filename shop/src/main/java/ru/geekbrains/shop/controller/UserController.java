@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.geekbrains.shop.dto.UserDTO;
 import ru.geekbrains.shop.dto.UserListParamsDTO;
+import ru.geekbrains.shop.service.RoleService;
 import ru.geekbrains.shop.service.UserService;
 
 import javax.validation.Valid;
@@ -24,21 +25,24 @@ public class UserController {
     private static final String USER_FORM_PAGE = "user_form";
     private static final String USER_LIST_PAGE = "user";
     private static final String USER_ATTRIBUTE = "user";
-    private final UserService service;
+    private static final String ROLES_ATTRIBUTE = "roles";
+    private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public UserController(UserService service) {
-        this.service = service;
+    public UserController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
     public String listPage(Model model, UserListParamsDTO params) {
 
         final String logMessage = String.format("User list page requested with parameters: userName = %s",
-                params.getUserName());
+                params.getUsername());
         log.info(logMessage);
 
-        final Page<UserDTO> users = service.findWithFilter(params);
+        final Page<UserDTO> users = userService.findWithFilter(params);
 
         model.addAttribute("reverseSortOrder", "asc".equals(params.getSortOrder()) ? "desc" : "asc");
         model.addAttribute("users", users);
@@ -50,6 +54,7 @@ public class UserController {
         log.info("New user page requested");
 
         model.addAttribute(USER_ATTRIBUTE, new UserDTO());
+        model.addAttribute(ROLES_ATTRIBUTE, roleService.findAll());
         return USER_FORM_PAGE;
     }
 
@@ -57,9 +62,10 @@ public class UserController {
     public String editUser(@PathVariable("id") Long id, Model model) {
         log.info("Edit user page requested");
 
-        Optional<UserDTO> user = service.findById(id);
+        Optional<UserDTO> user = userService.findById(id);
         if (user.isPresent()) {
-            model.addAttribute(USER_ATTRIBUTE, service.getById(id));
+            model.addAttribute(USER_ATTRIBUTE, userService.getById(id));
+            model.addAttribute(ROLES_ATTRIBUTE, roleService.findAll());
         } else {
             throw new NotFoundException(String.format("User with id %d not found", id));
         }
@@ -69,7 +75,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         log.info("Deleting user with id {}", id);
-        service.deleteById(id);
+        userService.deleteById(id);
         return "redirect:/user";
     }
 
@@ -82,19 +88,20 @@ public class UserController {
     }
 
     @PostMapping
-    public String update(@Valid @ModelAttribute("user") UserDTO user, BindingResult result) {
+    public String update(@Valid @ModelAttribute("user") UserDTO user, BindingResult result, Model model) {
         if (user.getPassword() != null && !user.getPassword().equals(user.getRepeatedPassword())) {
             result.rejectValue("repeatedPassword", "", "Passwords must be equal!");
         }
         if (result.hasErrors()) {
+            model.addAttribute(ROLES_ATTRIBUTE, roleService.findAll());
             return USER_FORM_PAGE;
         }
-        if (user.getId() != null && service.findById(user.getId()).isPresent()) {
+        if (user.getId() != null && userService.findById(user.getId()).isPresent()) {
             log.info("Updating user");
         } else {
             log.info("Saving new user");
         }
-        service.save(user);
+        userService.save(user);
         return "redirect:/user";
     }
 

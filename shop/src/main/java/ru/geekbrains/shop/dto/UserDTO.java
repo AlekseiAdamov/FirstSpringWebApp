@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,8 +24,11 @@ public class UserDTO {
     @NotBlank
     private String repeatedPassword;
 
-    public UserDTO(Long id, String username) {
+    private Set<RoleDTO> roles;
+
+    public UserDTO(Long id, String username, Set<RoleDTO> roles) {
         this.id = id;
         this.username = username;
+        this.roles = new HashSet<>(roles);
     }
 }

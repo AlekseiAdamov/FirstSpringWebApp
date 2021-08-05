@@ -20,4 +20,6 @@ public interface UserService {
     void deleteById(Long id);
 
     void save(UserDTO user);
+
+    Optional<UserDTO> findByName(String username);
 }

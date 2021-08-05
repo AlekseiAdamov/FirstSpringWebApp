@@ -1,10 +1,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <th class="center" scope="col" th:fragment="table_header(title, column)">[[${title}]]
+    <!--/*@thymesVar id="users" type="org.springframework.data.domain.Page<ru.geekbrains.shop.dto.UserDTO>"*/-->
+    <!--/*@thymesVar id="reverseSortOrder" type="java.lang.String"*/-->
     <a th:href="@{/user(
                         page=${users.number + 1},
                            size=${users.size},
-                           userName=${param.userName},
+                           username=${param.username},
+                           sortBy=${column},
                            sortOrder=${reverseSortOrder}
                            )}">
         <i class="fa fa-sort-down"></i>

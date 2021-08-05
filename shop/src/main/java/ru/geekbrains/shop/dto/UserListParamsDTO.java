@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserListParamsDTO {
-    private String userName;
+    private String username;
     private Integer page;
     private Integer size;
     private String sortBy;
